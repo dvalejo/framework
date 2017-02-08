@@ -5,7 +5,7 @@ class QueryBuilder
     private $pdo;
     private $statement;
 
-    function __construct($pdo)
+    function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }

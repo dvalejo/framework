@@ -2,52 +2,76 @@
 
 class Router
 {
-    private $request;
-    private $routes = [];
+    private $routes = [
+        'GET' => [],
+        'POST' => []
+    ];
     private $controller;
     private $action;
     private $parameters = [];
 
-    public function __construct()
+    /**
+     * @param $url
+     * @param $behavior
+     * -------------------------------------------------------------------
+     */
+    public function get($url, $behavior)
     {
-        $this->request = new Request();
-    }
-
-    public function build($url)
-    {
-        return str_replace('/', '\/', $url);
+        if (isset($url) && isset($behavior)) {
+            $url = str_replace('/', '\/', $url);
+            $this->routes['GET'][$url] = $behavior;
+        }
     }
 
     /**
      * @param $url
      * @param $behavior
+     * -------------------------------------------------------------------
+     */
+    public function post($url, $behavior)
+    {
+        if (isset($url) && isset($behavior)) {
+            $url = str_replace('/', '\/', $url);
+            $this->routes['POST'][$url] = $behavior;
+        }
+    }
+
+    /**
+     * @param $url
+     * @param $behavior
+     * -------------------------------------------------------------------
      */
     public function add($url, $behavior)
     {
         if (isset($url) && isset($behavior)) {
-            $url = $this->build($url);
+            $url = str_replace('/', '\/', $url);
             $this->routes[$url] = $behavior;
         }
     }
 
     /**
-     * Переход на главную страницу
+     * @return mixed
+     * -------------------------------------------------------------------
      */
     public function gotoMainPage() {
         $this->controller = 'MainController';
         $this->action = 'index';
         $controllerInstance = new $this->controller;
-        call_user_func([$controllerInstance, $this->action]);
+        return call_user_func([$controllerInstance, $this->action]);
     }
 
     /**
-     *  Сопоставление route и url, а также вызов соответствующего метода контроллера
+     * @param $requestUri
+     * @param $requestMethod
+     * @return bool|mixed
+     * Сопоставление route и url, а также вызов соответствующего метода контроллера
+     * -------------------------------------------------------------------
      */
-    public function dispatch()
+    public function dispatch($requestUri, $requestMethod)
     {
-        foreach ($this->routes as $route => $behavior) {
-            if (preg_match($route, $this->request->url, $matches)) {
-                list($this->controller, $this->action) = explode(':', $this->routes[$route]);
+        foreach ($this->routes[$requestMethod] as $route => $behavior) {
+            if (preg_match($route, $requestUri, $matches)) {
+                list($this->controller, $this->action) = explode(':', $this->routes[$requestMethod][$route]);
                 $this->parameters = array_slice($matches, 1);
 
                 // Проверяем есть ли такой контроллер
@@ -62,7 +86,6 @@ class Router
                     echo 'Метод контроллера не найден.';
                     exit();
                 }
-                //$this->parameters = $parameters;
                 return call_user_func_array([$controllerInstance, $this->action], $this->parameters);
             }
         }

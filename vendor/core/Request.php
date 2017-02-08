@@ -2,11 +2,13 @@
 
 class Request {
 
-    public $url;
-
-    public function __construct()
+    public static function uri()
     {
-        $this->url = $_SERVER['REQUEST_URI'];
+        return $_SERVER['REQUEST_URI'];
     }
 
+    public static function method()
+    {
+        return $_SERVER['REQUEST_METHOD'];
+    }
 }

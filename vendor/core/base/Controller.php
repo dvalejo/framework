@@ -2,7 +2,7 @@
 
 class Controller
 {
-    protected $postVars;
+    protected $request;
     protected $view;
     protected $layout = 'default';
     protected $vars = [];
