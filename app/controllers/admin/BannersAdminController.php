@@ -18,6 +18,7 @@ class BannersAdminController extends Controller
      */
     public function index()
     {
+        
         $b = new BannersAdminModel();
         $banners = $b->all();
         $this->setVars([

@@ -46,6 +46,17 @@
 
 <?= $content ?>
 
+<div class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="footer__content">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="<?= HTTP_JS_DIR ?>/main.js?<?= date('dmy-Gis', filemtime(LOCAL_JS_DIR . '/main.js')) ?>"></script>
 <script src="<?= HTTP_JS_DIR ?>/menu.js?<?= date('dmy-Gis', filemtime(LOCAL_JS_DIR . '/menu.js')) ?>"></script>

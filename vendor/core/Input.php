@@ -27,6 +27,18 @@ class Input
         'url' => FILTER_SANITIZE_URL
     ];
 
+    public function __construct()
+    {
+        foreach ($this->vars as $var => $value) {
+            switch ($var) {
+                case 'POST': $this->trimVars($_POST); break;
+                case 'GET': $this->trimVars($_GET); break;
+                case 'COOKIE': $this->trimVars($_COOKIE); break;
+                case 'SESSION': $this->trimVars($_SESSION); break;
+            }
+        }
+    }
+
     /**
      * @param $request_method
      * @param array $options
@@ -43,11 +55,13 @@ class Input
         if (!array_key_exists($request_method, $this->vars)) {
             throw new Exception("Ошибка. Суперглобального массива {$request_method} нет.");
         }
+
         foreach ($options as $var => $filter) {
             if (array_key_exists($filter, $this->filters)) {
                 $this->temp[$var] = $this->filters[$filter];
             }
         }
+
         $request_constant = intval("INPUT_{$request_method}");
         $this->vars[$request_method] = filter_input_array($request_constant, $this->temp, $add_empty = true);
         $this->currentMethod = $request_method;
@@ -82,5 +96,16 @@ class Input
             return $this->vars['POST'];
         }
         return $this->vars['POST'][$var];
+    }
+
+    /**
+     * @param array $vars
+     * -------------------------------------------------------------------
+     */
+    public function trimVars(array &$vars)
+    {
+        foreach ($vars as $var => $value) {
+            $vars[$var] = trim($value, ' ');
+        }
     }
 }
