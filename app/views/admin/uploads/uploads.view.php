@@ -5,6 +5,7 @@
         <div class="col-sm-12">
             <div class="headline">
                 <h1 class="head head_type_entity">Загрузки.</h1>
+                <a href="/admin/uploads/post-add" class="headline__btn">Добавить</a>
                 <a href="uploads.php?clean" class="headline__btn">Удалить неиспользуемые</a>
             </div>
             <?php if (empty($uploads) === true) { ?>

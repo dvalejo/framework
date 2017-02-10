@@ -4,7 +4,7 @@
     <div class="row">
         <div class="col-sm-8">
             <div class="headline">
-                <h1 class="head head_type_entity">Добавить баннер.</h1>
+                <h1 class="head head_type_entity">Загрузить.</h1>
             </div>
             <form action="/admin/uploads/post-add" method="post">
 
