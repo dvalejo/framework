@@ -29,9 +29,12 @@
         bannerFileStatus = document.querySelector('.js-banner-file-status'),
         bannerProjectInput = document.querySelector('.js-banner-project-input'),
         bannerTypeInput = document.querySelector('.js-banner-type-input'),
+        bannerWidthInput = document.querySelector('.js-banner-width-input'),
+        bannerHeightInput = document.querySelector('.js-banner-height-input'),
         bannerTitleInput = document.querySelector('.js-banner-title-input'),
         bannerDirInput = document.querySelector('.js-banner-dir-input'),
         bannerUrlsWrapper = document.querySelector('.js-banner-urls'),
+        bannerUrlInput,
         bannerThumbUrlInput = document.querySelector('.js-banner-thumb-url-input');
 
     if (bannerFileInput) {
@@ -56,11 +59,14 @@
 
             var xhr = new XMLHttpRequest(),
                 formData = new FormData(),
-                data;
+                data,
+                urls;
 
             formData.append('ajax', 1);
             formData.append('banner_project', bannerProjectInput.value);
             formData.append('banner_type', bannerTypeInput.value);
+            formData.append('banner_width', bannerWidthInput.value);
+            formData.append('banner_height', bannerHeightInput.value);
             formData.append('banner_file', event.target.files[0]);
 
             xhr.open('post', '/admin/banners/post-upload');
@@ -79,21 +85,19 @@
                             console.log(error);
                         }
 
-                        //console.log(data);
-                        if ( ! data.error) {
-                            var urls = data.http.urls.banners,
-                                BannerUrlInput;
-
+                        console.log(data);
+                        if (data.errors.length === 0) {
+                            urls = data.http.urls.banners;
                             // remove urls fields before creating new
                             bannerUrlsWrapper.innerHTML = '';
 
                             for (var i = 0; i < urls.length; i++) {
-                                BannerUrlInput = document.createElement('input');
-                                BannerUrlInput.setAttribute('type', 'text');
-                                BannerUrlInput.setAttribute('name', 'banner_url[]');
-                                BannerUrlInput.className = 'form-control form__input form__input_type_url';
-                                BannerUrlInput.value = data.http.urls.banners[i];
-                                bannerUrlsWrapper.appendChild(BannerUrlInput);
+                                bannerUrlInput = document.createElement('input');
+                                bannerUrlInput.setAttribute('type', 'text');
+                                bannerUrlInput.setAttribute('name', 'banner_url[]');
+                                bannerUrlInput.className = 'form-control form__input form__input_type_url';
+                                bannerUrlInput.value = data.http.urls.banners[i];
+                                bannerUrlsWrapper.appendChild(bannerUrlInput);
                             }
 
                             bannerDirInput.value = data.local['banner_directory'];
@@ -111,7 +115,9 @@
                             bannerFileFieldset.classList.remove('fieldset_is_active');
                             bannerFileFieldset.classList.add('fieldset_is_error');
                             bannerFileStatus.classList.remove('form__block_is_hidden');
-                            bannerFileStatus.innerHTML = data.error;
+                            data.errors.forEach(function (item) {
+                                bannerFileStatus.innerHTML += item + '<br>';
+                            });
                             bannerFileInput.value = '';
                         }
                     }
@@ -123,6 +129,7 @@
 
         function BFI_clickHandler(event) {
             event.target.value = null;
+            bannerFileStatus.innerHTML = '';
         }
     }
 

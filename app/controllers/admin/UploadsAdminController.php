@@ -10,7 +10,6 @@ class UploadsAdminController extends Controller
      */
     public function __construct()
     {
-        parent::__construct();
         if (Auth::check() === false) $this->redirect('/');
     }
 

@@ -131,7 +131,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             <input type="hidden" name="banner_id" value="<?= $banner['id'] ?>">
-                            <input type="submit" name="banner_edit" id="" value="Сохранить изменения" class="btn btn-primary">
+                            <input type="submit" id="" value="Сохранить изменения" class="btn btn-primary">
                         </div>
                     </div>
                 </div>

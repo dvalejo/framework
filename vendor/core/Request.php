@@ -11,4 +11,8 @@ class Request {
     {
         return $_SERVER['REQUEST_METHOD'];
     }
+
+    public static function referer() {
+        return $_SERVER['HTTP_REFERER'];
+    }
 }

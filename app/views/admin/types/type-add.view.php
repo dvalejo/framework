@@ -26,7 +26,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <input type="submit" name="type_add" value="Добавить новый тип" class="btn btn-primary">
+                            <input type="submit" value="Добавить новый тип" class="btn btn-primary">
                         </div>
                     </div>
                 </div>

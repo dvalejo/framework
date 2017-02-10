@@ -17,19 +17,28 @@ class AuthController extends Controller
      */
     public function post_login()
     {
-        $form_errors = setErrorsMessages('POST', [
+        $input = new Input();
+        $formErrors = $input->filter('post', [
+            'user_name' => 'string',
+            'user_password' => 'string'
+        ])->getErrors([
             'user_name' => 'Пожалуйста введите имя.',
             'user_password' => 'Пожалуйста введите пароль.'
         ]);
-        if (count($form_errors) > 0) {
-            echo 'У вас ошибочка.';
+        if (count($formErrors) > 0) {
+            $this->setVars([
+                'formErrors' => $formErrors
+            ]);
+            $this->getView('form-error');
             exit();
         }
+        
         $u = new UsersAdminModel();
         $users = $u->all();
 
         foreach ($users as $user) {
-            if ($this->postVars['user_name'] === $user['name'] AND password_verify($this->postVars['user_password'], $user['password'])) {
+            if ($input->post('user_name') === $user['name'] && 
+                password_verify($input->post('user_password'), $user['password'])) {
 
                 session_regenerate_id();
                 $_SESSION['id'] = session_id();

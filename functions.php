@@ -6,17 +6,6 @@ function d($var) {
     echo '</pre>';
 }
 
-function setErrorsMessages($method, $errors) {
-    $e = [];
-    $global = ($method === 'POST') ? $_POST : $_GET;
-    foreach ($errors as $field_name => $error) {
-        if (empty($global[$field_name])) {
-            $e[$field_name] = $error;
-        }
-    }
-    return $e;
-}
-
 // Recursively remove banner directory with files
 // -----------------------------------------------------------------------------
 function removeDirectoryWithFiles($directory) {

@@ -17,7 +17,7 @@
                             <a href="<?= HTTP_SITE_DIR ?>/banners/<?= $banner['id'] ?>/">
                                 <img src="<?= $banner['thumb_url'] ?>" class="" alt="">
                             </a>
-                            <div class="banner__type">
+                            <div class="banner__type banner__type_<?= strtolower($banner['t_name']) ?>">
                                 <?= $banner['t_name'] ?>
                             </div>
                             <div class="banner__size">

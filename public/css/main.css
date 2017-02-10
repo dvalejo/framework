@@ -160,10 +160,24 @@ body {
     top: 0;
     left: 0;
     padding: 3px 10px;
-    background-color: #ffffff;
+    font-size: 14px;
 }
+.banner__type {
+    background-color: #ffffff;
+    color: rgba(255, 255, 255, 1);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+}
+.banner__type_flash { background-color: #e91e63; }
+.banner__type_html5 { background-color: #ff5722; }
+.banner__type_gif { background-color: #4caf50; }
+.banner__type_static { background-color: #03a9f4; }
+.banner__type_adwords { background-color: #21C4A3; }
+
 .banner__size {
-    top: 28px;
+    top: 26px;
+    background-color: #ffffff;
+    color: rgba(0, 0, 0, 1);
+    box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
 }
 
 /* banner-single */
@@ -251,7 +265,7 @@ body {
 .form__block {
     display: block;
     margin: 0 0 10px 0;
-    font-size: 24px;
+    font-size: 18px;
 }
 .form__block_is_hidden {
     display: none;

@@ -6,10 +6,12 @@ class UsersAdminController extends Controller
 
     public function __construct()
     {
-        parent::__construct();
         if (Auth::check() === false) $this->redirect('/');
     }
 
+    /*
+     * -------------------------------------------------------------------
+     */
     public function index()
     {
         $u = new UsersAdminModel();
@@ -20,41 +22,55 @@ class UsersAdminController extends Controller
         $this->getView('admin/users/users');
     }
 
+    /**
+     * -------------------------------------------------------------------
+     */
     public function add()
     {
         $this->getView('admin/users/user-add');
     }
 
+    /**
+     * @throws Exception
+     * -------------------------------------------------------------------
+     */
     public function post_add()
     {
-        $form_errors = setErrorsMessages('POST', [
-            'user_name' => 'Пожалуйста введите имя пользователя.',
-            'user_password' => 'Пожалуйста введите пароль пользователя.',
-            'user_password_repeat' => 'Пожалуйста повторите пароль пользователя.',
+        $input = new Input();
+        $formErrors = $input->filter('post', [
+            'user_name' => 'string',
+            'user_password' => 'string',
+            'user_password_repeat' => 'string'
+        ])->getErrors([
+            'user_name' => 'Пожалуйста введите корректное имя.',
+            'user_password' => 'Пожалуйста введите корректный пароль.',
+            'user_password_repeat' => 'Пожалуйста повторите пароль.',
         ]);
-        if (count($form_errors) > 0) {
-            echo 'У вас ошибочка.';
+        if ($input->post('user_password') !== $input->post('user_password_repeat')) {
+            $formErrors = ['Вы ввели разные пароли.'];
+        }
+        if (count($formErrors) > 0) {
+            $this->setVars([
+                'formErrors' => $formErrors
+            ]);
+            $this->getView('form-error');
             exit();
         }
-        if ($this->postVars['user_password'] !== $this->postVars['user_password_repeat']) {
-            $form_errors = ['Вы ввели разные пароли.'];
-            echo 'У вас ошибочка.';
-            exit();
-        }
-        $hash = password_hash($this->postVars['user_password'], PASSWORD_DEFAULT);
+        $hash = password_hash($input->post('user_password'), PASSWORD_DEFAULT);
 
         $u = new UsersAdminModel();
-        $u->add($this->postVars, $hash);
+        $u->add($input->post(), $hash);
         $this->redirect('/admin/users/');
     }
-    
+
+    /**
+     * @param $id
+     * -------------------------------------------------------------------
+     */
     public function delete($id)
     {
         $u = new UsersAdminModel();
-        $user = $u->delete($id);
-        $this->setVars([
-            ':user_id' => $id
-        ]);
+        $u->delete($id);
         $this->redirect('/admin/users/');
     }
 }

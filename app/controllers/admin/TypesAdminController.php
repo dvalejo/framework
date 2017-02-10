@@ -10,7 +10,6 @@ class TypesAdminController extends Controller
      */
     public function __construct()
     {
-        parent::__construct();
         if (Auth::check() === false) $this->redirect('/');
     }
 
@@ -40,16 +39,23 @@ class TypesAdminController extends Controller
      */
     public function post_add()
     {
-        $form_errors = setErrorsMessages('POST', [
+        $input = new Input();
+        $formErrors = $input->filter('post', [
+            'type_name' => 'string',
+            'type_slug' => 'string'
+        ])->getErrors([
             'type_name' => 'Пожалуйста введите название типа.',
             'type_slug' => 'Пожалуйста введите slug типа.'
         ]);
-        if (count($form_errors) > 0) {
-            echo 'У вас ошибочка.';
+        if (count($formErrors) > 0) {
+            $this->setVars([
+                'formErrors' => $formErrors
+            ]);
+            $this->getView('form-error');
             exit();
         }
         $t = new TypesAdminModel();
-        $t->add($this->postVars);
+        $t->add($input->post());
         $this->redirect('/admin/types/');
     }
 
@@ -72,16 +78,23 @@ class TypesAdminController extends Controller
      */
     public function post_edit()
     {
-        $form_errors = setErrorsMessages('POST', [
+        $input = new Input();
+        $formErrors = $input->filter('post', [
+            'type_name' => 'string',
+            'type_slug' => 'string'
+        ])->getErrors([
             'type_name' => 'Пожалуйста введите название типа.',
             'type_slug' => 'Пожалуйста введите slug типа.'
         ]);
-        if (count($form_errors) > 0) {
-            echo 'У вас ошибочка.';
+        if (count($formErrors) > 0) {
+            $this->setVars([
+                'formErrors' => $formErrors
+            ]);
+            $this->getView('form-error');
             exit();
         }
         $t = new TypesAdminModel();
-        $t->update($this->postVars);
+        $t->update($input->post());
         $this->redirect('/admin/types/');
     }
 

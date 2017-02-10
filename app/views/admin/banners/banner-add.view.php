@@ -123,7 +123,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <input type="submit" name="banner_add" id="" value="Добавить новый баннер" class="btn btn-primary">
+                            <input type="submit" id="" value="Добавить новый баннер" class="btn btn-primary">
                         </div>
                     </div>
                 </div>

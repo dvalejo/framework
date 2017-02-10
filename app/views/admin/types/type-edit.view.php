@@ -27,7 +27,7 @@
                     <div class="col-sm-12">
                         <div class="form-group">
                             <input type="hidden" name="type_id" value="<?= $type['id'] ?>">
-                            <input type="submit" name="type_edit" value="Сохранить изменения" class="btn btn-primary">
+                            <input type="submit" value="Сохранить изменения" class="btn btn-primary">
                         </div>
                     </div>
                 </div>

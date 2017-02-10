@@ -7,11 +7,6 @@ class Controller
     protected $layout = 'default';
     protected $vars = [];
 
-    public function __construct()
-    {
-        $this->postVars = count($_POST) > 0 ? $_POST : [];
-    }
-
     public function setVars(array $vars)
     {
         $this->vars = $vars;
