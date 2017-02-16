@@ -22,6 +22,7 @@ define('LOCAL_STYLESHEET_DIR', LOCAL_PUBLIC_DIR . _DS_ . 'css');
 define('LOCAL_JS_DIR', LOCAL_PUBLIC_DIR . _DS_ . 'js');
 define('LOCAL_PORTFOLIO_DIR', LOCAL_SITE_DIR . _DS_ . 'portfolio');
 define('LOCAL_BANNERS_DIR', LOCAL_PORTFOLIO_DIR . _DS_ . 'banners');
+define('LOCAL_TEMP_DIR', LOCAL_PORTFOLIO_DIR . _DS_ . 'temp');
 
 define('LOCAL_ADMIN_CONTROLLERS_DIR', LOCAL_CONTROLLERS_DIR . _DS_ . 'admin');
 define('LOCAL_ADMIN_MODELS_DIR', LOCAL_MODELS_DIR . _DS_ . 'admin');

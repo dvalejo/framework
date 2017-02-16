@@ -49,18 +49,19 @@ class BannersAdminController extends Controller
         $formErrors = $input->filter('post', [
             'banner_project' => 'string',
             'banner_type' => 'string',
-            'banner_width' => 'number:int',
-            'banner_height' => 'number:int',
+            'banner_width' => 'string',
+            'banner_height' => 'string',
             'banner_title' => 'string',
-            'banner_directory' => 'string',
-            'banner_url' => 'array:string',
-            'banner_thumb_url' => 'string'
+            'banner_thumb_url' => 'url',
+            'banner_url' => 'array:url'
         ])->getErrors([
-            'banner_project' => 'Пожалуйста введите название каталога проекта.',
-            'banner_type' => 'Пожалуйста выберите тип баннера.',
-            'banner_width' => 'Пожалуйста введите ширину баннера.',
-            'banner_height' => 'Пожалуйста введите высоту баннера.',
-            'banner_title' => 'Пожалуйста введите название баннера.',
+            'banner_project' => 'Введите корректное название каталога проекта.',
+            'banner_type' => 'Выберите тип баннера.',
+            'banner_width' => 'Введите корректную ширину баннера.',
+            'banner_height' => 'Введите корректную высоту баннера.',
+            'banner_title' => 'Введите название баннера.',
+            'banner_thumb_url' => 'Введите корректную ссылку на миниатюру.',
+            'banner_url' => 'Введите корректную ссылку на баннер.'
         ]);
         if (count($formErrors) > 0) {
             $this->setVars([
@@ -69,25 +70,26 @@ class BannersAdminController extends Controller
             $this->getView('form-error');
             exit();
         }
+
         $b = new BannersAdminModel();
         $b->add($input->post());
-        $u = new UploadsAdminModel();
-        $u->updateInUse($input->post());
         $this->redirect('/admin/banners/');
     }
 
     /**
      * -------------------------------------------------------------------
      */
-    public function post_upload()
+    public function ajax_post_upload()
     {
         $result = [];
         $input = new Input();
         $result['errors'] = $input->filter('post', [
             'banner_project' => 'string',
             'banner_type' => 'string',
-            'banner_width' => 'number:int',
-            'banner_height' => 'number:int',
+            'banner_width' => 'string',
+            'banner_height' => 'string',
+            'banner_directory' => 'url',
+            'banner_edit' => 'number:int'
         ])->getErrors([
             'banner_project' => 'Введите название каталога проекта.',
             'banner_type' => 'Выберите тип баннера.',
@@ -101,68 +103,69 @@ class BannersAdminController extends Controller
 
         // -----------------------------------------------------------------------------
         if (empty($_FILES)) {
-            $result['errors'] = 'Not found uploaded files.';
-            echo json_encode($result);
+            $result['errors'] = 'Нет файлов для загрузки.';
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
-
-        $ajaxBannerProject = $input->post('banner_project');
-        $ajaxBannerType = $input->post('banner_type');
 
         $bannerFileName = basename($_FILES['banner_file']['name']);
         $bannerTempName = $_FILES['banner_file']['tmp_name'];
         $bannerExtension = pathinfo($bannerFileName, PATHINFO_EXTENSION);
-        $bannerTypeDir = $ajaxBannerType;
-        $bannerProjectDir = $ajaxBannerProject;
+        $bannerName = pathinfo($bannerFileName, PATHINFO_FILENAME);
+        $bannerProject = $input->post('banner_project');
+        $bannerType = $input->post('banner_type');
 
-        $bannerProjectFullDir = LOCAL_BANNERS_DIR . _DS_ . $bannerTypeDir . _DS_ . $bannerProjectDir;
-        $bannerFullName = $bannerProjectFullDir . _DS_ . $bannerFileName;
+        // Если это редактирование баннера, а не добавление
+        if ($input->post('banner_edit') === 1) {
+            $bannerOldDirectory = $input->post('banner_directory');
+            // Предварительно удаляем директорию со старым баннером
+            removeDirectoryWithFiles($bannerOldDirectory);
+        }
 
-        $pathParts = pathinfo($bannerFullName);
-        $bannerUnzipDir = $pathParts['filename'];
-        $bannerUnzipFullDir = $pathParts['dirname'] . _DS_ . $pathParts['filename'];
+        $bannerUnzipFullDir = LOCAL_BANNERS_DIR . _DS_ . $bannerType . _DS_ . $bannerProject . _DS_ . $bannerName;
+        $bannerFullName = $bannerUnzipFullDir . _DS_ . $bannerFileName;
 
         // -----------------------------------------------------------------------------
         if ($_FILES['banner_file']['error'] !== 0) {
             switch ($_FILES['banner_file']['error']) {
                 case 1:
-                    $result['errors'][] = 'Your file is too big';
+                    $result['errors'][] = 'Ваш файл слишком большой.';
                     break;
                 default:
-                    $result['errors'][] = 'Other error.';
+                    $result['errors'][] = 'Другая ошибка.';
                     break;
             }
-            echo json_encode($result);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         // -----------------------------------------------------------------------------
         if ( ! is_uploaded_file($bannerTempName)) {
-            $result['errors'][] = 'Banner file was not loaded by the form.';
-            echo json_encode($result);
+            $result['errors'][] = 'Файл не был загружен с помощью формы загрузки.';
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         // -----------------------------------------------------------------------------
         if ( ! in_array($bannerExtension, ['zip'])) {
-            $result['errors'][] = 'Wrong banner file extension.';
-            echo json_encode($result);
+            $result['errors'][] = 'Недопустимое расширение файла. Можно загружать только zip - архивы.';
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         // -----------------------------------------------------------------------------
-        if ( ! is_dir($bannerProjectFullDir)) {
-            if ( ! mkdir($bannerProjectFullDir)) {
-                $result['errors'][] = 'We can not create project directory.';
-                echo json_encode($result);
+        if ( ! is_dir($bannerUnzipFullDir)) {
+            if ( ! mkdir($bannerUnzipFullDir, 0777, true)) {
+                $result['errors'][] = 'Не можем создать каталог для баннера. Возможно он уже существует.';
+                echo json_encode($result, JSON_UNESCAPED_UNICODE);
                 exit();
             }
         }
 
         // -----------------------------------------------------------------------------
         if ( ! move_uploaded_file($bannerTempName, $bannerFullName)) {
-            $result['errors'][] = 'We can not move files from TEMP to banner directory.';
-            echo json_encode($result);
+            $result['errors'][] = 'Не можем переместить файл из php/temp.';
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
@@ -170,27 +173,17 @@ class BannersAdminController extends Controller
         $zip = new ZipArchive();
         $arch = $zip->open($bannerFullName);
         if ( ! $arch === true) {
-            $result['errors'][] = 'We can not open banner archive.';
-            removeBannerArchive($bannerFullName);
-            echo json_encode($result);
+            $result['errors'][] = 'Не можем открыть архив.';
+            unlink($bannerFullName);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         // -----------------------------------------------------------------------------
-        if ( ! is_dir($bannerUnzipFullDir)) {
-            if ( ! mkdir($bannerUnzipFullDir)) {
-                $result['errors'][] = 'We can not make directory to extract banner files. Directory with that name is already exist.';
-                removeBannerArchive($bannerFullName);
-                echo json_encode($result);
-                exit();
-            }
-        }
-
-        // -----------------------------------------------------------------------------
         if ( ! $zip->extractTo($bannerUnzipFullDir)) {
-            $result['errors'][] = 'Can not extract from banner archive file.';
-            removeBannerArchive($bannerFullName);
-            echo json_encode($result);
+            $result['errors'][] = 'Не можем извлечь файлы из архива.';
+            unlink($bannerFullName);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
         $zip->close();
@@ -203,11 +196,11 @@ class BannersAdminController extends Controller
         foreach (new DirectoryIterator($bannerUnzipFullDir) as $file) {
             if ($file->isDot()) continue;
 
-            if (preg_match('/(.*thumb.*)\.(jpg|png)$/i', $file->getFilename())) {
+            if (preg_match('#^(thumb.*?)(\.)(jpg|png)$#i', $file->getFilename())) {
                 $thumbFiles[] = $file->getPathname();
             }
             else {
-                switch ($ajaxBannerType) {
+                switch ($bannerType) {
                     case 'flash':
                         if (preg_match('/.+\.swf$/i', $file->getFilename())) {
                             $bannerFiles[] = $file->getPathname();
@@ -241,54 +234,42 @@ class BannersAdminController extends Controller
 
         // -----------------------------------------------------------------------------
         if (empty($thumbFiles)) {
-            $result['errors'][] = 'We can not find correct thumbnail file. Filename must have a word `thumb` and extension JPG or PNG';
-            removeBannerArchive($bannerFullName);
+            $result['errors'][] = 'Не можем найти в распакованном архиве файл миниатюры. Название миниатюры должно начинаться со слова `thumb` и иметь расширение JPG или PNG';
+            unlink($bannerFullName);
             removeDirectoryWithFiles($bannerUnzipFullDir);
-            echo json_encode($result);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         // -----------------------------------------------------------------------------
         if (empty($bannerFiles)) {
-            $result['errors'][] = 'We can not find correct banner file. Maybe you are selected wrong banner type.';
-            removeBannerArchive($bannerFullName);
+            $result['errors'][] = 'Не можем найти в распакованном архиве файл(ы) баннера. Возможно вы ошиблись с типом баннера.';
+            unlink($bannerFullName);
             removeDirectoryWithFiles($bannerUnzipFullDir);
-            echo json_encode($result);
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
         foreach ($thumbFiles as $thumbFile) {
-            $result['local']['files']['thumbs'][] = $thumbFile;
-            $result['http']['urls']['thumbs'][] = HTTP_BANNERS_DIR . _DS_ . $bannerTypeDir . _DS_ . $bannerProjectDir . _DS_ . $bannerUnzipDir . _DS_ . basename($thumbFile);
+            $result['local']['thumbs'][] = $thumbFile;
+            $result['urls']['thumbs'][] = HTTP_BANNERS_DIR . _DS_ . $bannerType . _DS_ . $bannerProject . _DS_ . $bannerName . _DS_ . basename($thumbFile);
         }
         foreach ($bannerFiles as $bannerFile) {
-            $result['local']['files']['banners'][] = $bannerFile;
-            $result['http']['urls']['banners'][] = HTTP_BANNERS_DIR . _DS_ . $bannerTypeDir . _DS_ . $bannerProjectDir . _DS_ . $bannerUnzipDir . _DS_ . basename($bannerFile);
+            $result['local']['banners'][] = $bannerFile;
+            $result['urls']['banners'][] = HTTP_BANNERS_DIR . _DS_ . $bannerType . _DS_ . $bannerProject . _DS_ . $bannerName . _DS_ . basename($bannerFile);
         }
-        $result['local']['banner_directory'] = $bannerUnzipFullDir;
-        $result['title'] = pathinfo($bannerFileName, PATHINFO_FILENAME);
+        $result['title'] = $bannerName;
 
         // -----------------------------------------------------------------------------
         if ( ! unlink($bannerFullName)) {
-            $result['errors'][] = 'Can not remove banner archive.';
-            echo json_encode($result);
+            $result['errors'][] = 'Не можем удалить архив баннера.';
+            echo json_encode($result, JSON_UNESCAPED_UNICODE);
             exit();
         }
 
-        // Add to uploads
         // -----------------------------------------------------------------------------
-        $u = new UploadsAdminModel();
-        $uploads = $u->allByDirectory($bannerUnzipFullDir);
-
-        if (count($uploads) > 0) {
-            $u->updateUploadTime($bannerUnzipFullDir);
-        }
-        else {
-            $u->add($bannerProjectFullDir, $bannerUnzipFullDir);
-        }
-
-        $result['message'] = 'Upload complete!';
-        echo json_encode($result);
+        $result['message'] = 'Загрузка завершена!';
+        echo json_encode($result, JSON_UNESCAPED_UNICODE);
     }
 
     /**
@@ -303,12 +284,15 @@ class BannersAdminController extends Controller
         $banner = $b->single($id);
 
         // Create an array from urls string.
-        $bannersUrls = explode(',', $banner['url']);
+        $bannerUrls = explode(',', $banner['url']);
+        // Get current banner directory
+        $bannerDirectory = LOCAL_BANNERS_DIR ._DS_. $banner['type_slug'] ._DS_. $banner['project'] ._DS_. $banner['title'];
 
         $this->setVars([
             'types' => $types,
             'banner' => $banner,
-            'bannersUrls' => $bannersUrls
+            'bannerUrls' => $bannerUrls,
+            'bannerDirectory' => $bannerDirectory
         ]);
         $this->getView('admin/banners/banner-edit');
     }
@@ -321,23 +305,21 @@ class BannersAdminController extends Controller
         $input = new Input();
         $formErrors = $input->filter('post', [
             'banner_project' => 'string',
-            'banner_title' => 'string',
             'banner_type' => 'string',
-            'banner_width' => 'number:int',
-            'banner_height' => 'number:int',
-            'banner_thumb_url' => 'string',
-            'banner_url' => 'array:string',
-            'banner_directory' => 'string',
+            'banner_width' => 'string',
+            'banner_height' => 'string',
+            'banner_title' => 'string',
+            'banner_thumb_url' => 'url',
+            'banner_url' => 'array:url',
             'banner_id' => 'number:int'
         ])->getErrors([
-            'banner_project' => 'Пожалуйста введите название каталога проекта.',
-            'banner_title' => 'Пожалуйста введите название баннера.',
-            'banner_type' => 'Пожалуйста выберите тип баннера.',
-            'banner_width' => 'Пожалуйста введите ширину баннера.',
-            'banner_height' => 'Пожалуйста введите высоту баннера.',
-            'banner_thumb_url' => 'Пожалуйста введите URL миниатюры.',
-            'banner_url' => 'Пожалуйста введите URL баннера.',
-            'banner_directory' => 'Пожалуйста введите каталог баннера.'
+            'banner_project' => 'Введите корректное название каталога проекта.',
+            'banner_type' => 'Выберите тип баннера.',
+            'banner_width' => 'Введите корректную ширину баннера.',
+            'banner_height' => 'Введите корректную высоту баннера.',
+            'banner_title' => 'Введите название баннера.',
+            'banner_thumb_url' => 'Введите корректную ссылку на миниатюру.',
+            'banner_url' => 'Введите корректную ссылку на баннер.'
         ]);
         if (count($formErrors) > 0) {
             $this->setVars([
@@ -350,9 +332,6 @@ class BannersAdminController extends Controller
         $b = new BannersAdminModel();
         $b->update($input->post());
 
-        $u = new UploadsAdminModel();
-        $u->updateInUse($input->post());
-
         $this->redirect('/admin/banners/');
     }
 
@@ -364,11 +343,16 @@ class BannersAdminController extends Controller
     {
         $b = new BannersAdminModel();
         $banner = $b->single($id);
+        // Удаляем баннер и если каталог проекта пустой - его тоже удаляем
+        // --------------------------------
+        $banner_project = LOCAL_BANNERS_DIR . _DS_ . $banner['type_slug'] . _DS_ . $banner['project'];
+        $banner_directory = $banner_project . _DS_ . $banner['title'];
+        removeDirectoryWithFiles($banner_directory);
+        if (directoryIsEmpty($banner_project)) {
+            rmdir($banner_project);
+        }
+        // --------------------------------
         $b->delete($id);
-
-        $u = new UploadsAdminModel();
-        $u->updateOffUse($banner['directory']);
-
         $this->redirect('/admin/banners/');
     }
 }

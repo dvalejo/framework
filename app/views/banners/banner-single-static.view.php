@@ -6,11 +6,17 @@
             <?php } else { ?>
                 <h1 class="head"><?= $banner['title'] ?></h1>
                 <div class="banner-single">
-                    <?php foreach ($banner['url'] as $bannerUrl): ?>
-                    <div class="banner-single__block">
-                        <img src="<?= $bannerUrl ?>" class="img-responsive">
-                    </div>
-                    <?php endforeach; ?>
+                    <?php if (is_array($banner['url'])) { ?>
+                        <?php foreach ($banner['url'] as $bannerUrl): ?>
+                        <div class="banner-single__block">
+                          <img src="<?= $bannerUrl ?>" class="img-responsive">
+                        </div>
+                        <?php endforeach; ?>
+                    <?php } else { ?>
+                      <div class="banner-single__block">
+                        <img src="<?= $banner['url'] ?>" class="img-responsive">
+                      </div>
+                    <?php } ?>
                 </div>
             <?php } ?>
         </div>

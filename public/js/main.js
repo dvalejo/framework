@@ -2,77 +2,74 @@
 // ---------------------------------------------------------------------------------------------
 
 (function () {
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('get', '/banners/ajax', true);
-    xhr.send();
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState == 4 && xhr.status == 200) {
-            var banners = JSON.parse(xhr.responseText);
-            var bAjax = document.querySelector('.b-ajax');
-            banners.forEach(function (item, index) {
-                console.log(item);
-            });
-        }
-    }
-
-})();
-
-// ---------------------------------------------------------------------------------------------
-
-(function () {
     var bannerFileFieldset = document.querySelector('.js-banner-file'),
-        bannerTitleFieldset = document.querySelector('.js-banner-title'),
-        bannerPathsFieldset = document.querySelector('.js-banner-paths'),
         bannerFileInput = document.querySelector('.js-banner-file-input'),
-        bannerFileStatus = document.querySelector('.js-banner-file-status'),
+        uploadProgressStatus = document.querySelector('.js-upload-progress-status'),
+        uploadProgressResult = document.querySelector('.js-upload-progress-result'),
+        bannerErrors = document.querySelector('.js-banner-errors'),
+        bannerPathsFieldset = document.querySelector('.js-banner-paths'),
         bannerProjectInput = document.querySelector('.js-banner-project-input'),
         bannerTypeInput = document.querySelector('.js-banner-type-input'),
         bannerWidthInput = document.querySelector('.js-banner-width-input'),
         bannerHeightInput = document.querySelector('.js-banner-height-input'),
         bannerTitleInput = document.querySelector('.js-banner-title-input'),
-        bannerDirInput = document.querySelector('.js-banner-dir-input'),
+        bannerDirectoryInput = document.querySelector('.js-banner-directory-input'),
         bannerUrlsWrapper = document.querySelector('.js-banner-urls'),
         bannerUrlInput,
-        bannerThumbUrlInput = document.querySelector('.js-banner-thumb-url-input');
+        bannerUrlsFragment,
+        bannerThumbUrlInput = document.querySelector('.js-banner-thumb-url-input'),
+        timer;
 
     if (bannerFileInput) {
+        bannerFileInput.setAttribute('disabled', 'disabled');
+        bannerFileInput.addEventListener('change', bannerFileInput_changeHandler, false);
+        bannerFileInput.addEventListener('click', bannerFileInput_clickHandler, false);
 
-        bannerFileInput.addEventListener('change', BFI_changeHandler, false);
-        bannerFileInput.addEventListener('click', BFI_clickHandler, false);
-        bannerProjectInput.addEventListener('input', BPI_changeHandler, false);
-
-        function BPI_changeHandler(event) {
-            if (event.target.value) {
-                if (bannerFileFieldset.disabled === true) {
-                    bannerFileFieldset.disabled = false;
-                    bannerFileFieldset.classList.add('fieldset_is_active');
-                }
+        timer = setInterval(function () {
+            if (bannerProjectInput.value && bannerTypeInput.value && bannerWidthInput.value && bannerHeightInput.value) {
+                bannerFileInput.removeAttribute('disabled');
+                clearInterval(timer);
             } else {
-                bannerFileFieldset.disabled = true;
-                bannerFileFieldset.classList.remove('fieldset_is_active');
+                bannerFileInput.setAttribute('disabled', 'disabled');
             }
-        }
+        }, 1000);
 
-        function BFI_changeHandler(event) {
-
-            var xhr = new XMLHttpRequest(),
-                formData = new FormData(),
+        function bannerFileInput_changeHandler(event) {
+            var xhr,
+                formData,
                 data,
                 urls;
 
-            formData.append('ajax', 1);
+            formData = new FormData();
             formData.append('banner_project', bannerProjectInput.value);
             formData.append('banner_type', bannerTypeInput.value);
             formData.append('banner_width', bannerWidthInput.value);
             formData.append('banner_height', bannerHeightInput.value);
+            // Если есть input:banner_directory, значит сейчас происходит редактирование баннера
+            if (bannerDirectoryInput) {
+                formData.append('banner_directory', bannerDirectoryInput.value);
+                // Даём знать контроллеру что сейчас происходит редактирование
+                formData.append('banner_edit', 1);
+            }
             formData.append('banner_file', event.target.files[0]);
 
-            xhr.open('post', '/admin/banners/post-upload');
+            xhr = new XMLHttpRequest();
+            xhr.open('post', '/admin/banners/ajax-post-upload');
 
             xhr.upload.onprogress = function (event) {
-                //console.log(event);
+                if (event.lengthComputable) {
+                    uploadProgressStatus.innerHTML = 'Загружено <b>' + event.loaded + '</b> из <b>' + event.total + '</b> байт.';
+                }
+            };
+            xhr.upload.onload = function (event) {
+                bannerFileFieldset.classList.add('fieldset_is_success');
+                uploadProgressResult.classList.add('upload-progress__result_is_success');
+                uploadProgressResult.innerHTML = 'Файл успешно загружен!';
+            };
+            xhr.upload.onerror = function (event) {
+                bannerFileFieldset.classList.add('fieldset_is_error');
+                uploadProgressResult.classList.add('upload-progress__result_is_error');
+                uploadProgressResult.innerHTML = 'Извините произошла ошибка!';
             };
 
             xhr.onreadystatechange = function () {
@@ -85,77 +82,41 @@
                             console.log(error);
                         }
 
-                        console.log(data);
-                        if (data.errors.length === 0) {
-                            urls = data.http.urls.banners;
-                            // remove urls fields before creating new
+                        if ( data.errors.length === 0 ) {
+                            bannerTitleInput.setAttribute('value', data['title']);
+                            bannerThumbUrlInput.setAttribute('value', data.urls.thumbs[0]);
                             bannerUrlsWrapper.innerHTML = '';
-
-                            for (var i = 0; i < urls.length; i++) {
-                                bannerUrlInput = document.createElement('input');
-                                bannerUrlInput.setAttribute('type', 'text');
-                                bannerUrlInput.setAttribute('name', 'banner_url[]');
-                                bannerUrlInput.className = 'form-control form__input form__input_type_url';
-                                bannerUrlInput.value = data.http.urls.banners[i];
-                                bannerUrlsWrapper.appendChild(bannerUrlInput);
-                            }
-
-                            bannerDirInput.value = data.local['banner_directory'];
-                            bannerThumbUrlInput.value = data.http.urls.thumbs[0];
-                            bannerTitleInput.value = data['title'];
-                            bannerFileFieldset.classList.remove('fieldset_is_error');
-                            bannerFileFieldset.classList.remove('fieldset_is_active');
-                            bannerFileFieldset.classList.add('fieldset_is_success');
-                            bannerFileStatus.classList.remove('form__block_is_hidden');
-                            bannerFileStatus.innerHTML = data.message;
-                            bannerTitleFieldset.disabled = false;
-                            bannerPathsFieldset.disabled = false;
-                        } else {
-                            bannerFileFieldset.classList.remove('fieldset_is_success');
-                            bannerFileFieldset.classList.remove('fieldset_is_active');
-                            bannerFileFieldset.classList.add('fieldset_is_error');
-                            bannerFileStatus.classList.remove('form__block_is_hidden');
-                            data.errors.forEach(function (item) {
-                                bannerFileStatus.innerHTML += item + '<br>';
+                            bannerUrlsFragment = document.createDocumentFragment();
+                            data.urls.banners.forEach(function (item) {
+                                bannerUrlInput = HTML.create({
+                                    'element': 'input',
+                                    'attributes': {
+                                        'type': 'text',
+                                        'name': 'banner_url[]',
+                                        'value': item,
+                                        'readonly': 'readonly'
+                                    },
+                                    'class': 'form-control form__input_type_url js-banner-url-input'
+                                });
+                                bannerUrlsFragment.appendChild(bannerUrlInput);
                             });
-                            bannerFileInput.value = '';
+                            bannerUrlsWrapper.appendChild(bannerUrlsFragment);
+                        } else {
+                            bannerErrors.classList.remove('banner-errors_is_hidden');
+                            bannerErrors.innerHTML = data.errors;
                         }
                     }
                 }
             };
-
             xhr.send(formData);
         }
 
-        function BFI_clickHandler(event) {
+        function bannerFileInput_clickHandler(event) {
             event.target.value = null;
-            bannerFileStatus.innerHTML = '';
+            bannerFileFieldset.className = 'fieldset fieldset_type_banner-file js-banner-file';
+            uploadProgressResult.innerHTML = '';
+            uploadProgressStatus.innerHTML = 'Готов загружать!';
+            bannerErrors.classList.add('banner-errors_is_hidden');
         }
     }
-
-})();
-
-// ---------------------------------------------------------------------------------------------
-
-(function () {
-    var clearEmptyProjects = document.querySelector('.js-make-clean');
-
-    if (clearEmptyProjects) {
-        clearEmptyProjects.addEventListener('click', CEP_clickHandler, false);
-
-        function CEP_clickHandler(event) {
-            event.preventDefault();
-            var xhr = new XMLHttpRequest();
-            xhr.open('post', '/admin/cleaner.php');
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-                        console.log(xhr.responseText);
-                    }
-                }
-            };
-            xhr.send(null);
-        }
-    }
-
 })();

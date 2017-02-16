@@ -8,13 +8,13 @@ class TypesAdminModel extends Model
                 FROM types
                 LEFT JOIN banners ON types.slug = banners.type_slug
                 GROUP BY types.id;';
-        return $types = $this->qBuilder->simpleQuery($sql)->result();
+        return $this->qBuilder->simpleQuery($sql)->result('all');
     }
 
     public function allForBanners()
     {
         $sql = 'SELECT * FROM types';
-        return $this->qBuilder->simpleQuery($sql)->result();
+        return $this->qBuilder->simpleQuery($sql)->result('all');
     }
 
     public function single($id)
@@ -23,7 +23,7 @@ class TypesAdminModel extends Model
         $binds = [
             ':type_id' => $id
         ];
-        return $type = $this->qBuilder->preparedQuery($sql, $binds)->result();
+        return $this->qBuilder->preparedQuery($sql, $binds)->result('single');
     }
 
     public function add($post)

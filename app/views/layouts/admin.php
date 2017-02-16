@@ -30,9 +30,6 @@
             <div class="menu__item main-menu__item">
                 <a class="menu__link main-menu__link" href="/admin/types/">Типы</a>
             </div>
-            <div class="menu__item main-menu__item">
-                <a class="menu__link main-menu__link" href="/admin/uploads/">Загрузки</a>
-            </div>
             <div class="menu__item main-menu__item main-menu__separator">|</div>
             <div class="menu__item main-menu__item">
                 <a class="menu__link main-menu__link" href="/admin/users/">Пользователи</a>

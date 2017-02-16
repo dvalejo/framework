@@ -80,6 +80,7 @@ class TypesAdminController extends Controller
     {
         $input = new Input();
         $formErrors = $input->filter('post', [
+            'type_id' => 'number:int',
             'type_name' => 'string',
             'type_slug' => 'string'
         ])->getErrors([

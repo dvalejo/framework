@@ -14,13 +14,12 @@
                     <thead>
                     <tr>
                         <th>id</th>
-                        <th>project</th>
-                        <th>upload_id</th>
-                        <th>title</th>
-                        <th>type</th>
-                        <th>size</th>
-                        <th>edit</th>
-                        <th>delete</th>
+                        <th>Проект</th>
+                        <th>Название</th>
+                        <th>Тип</th>
+                        <th>Размеры</th>
+                        <th>Дата обновления</th>
+                        <th></th>
                     </tr>
                     </thead>
                     <tbody>
@@ -28,15 +27,17 @@
                         <tr>
                             <td><?= $banner['id'] ?></td>
                             <td><?= $banner['project'] ?></td>
-                            <td><?= $banner['upload_id'] ?></td>
                             <td><?= $banner['title'] ?></td>
                             <td><?= $banner['type_name'] ?></td>
                             <td><?= $banner['width'] ?> x <?= $banner['height'] ?></td>
+                            <td><?= $banner['updated_at'] ?></td>
                             <td>
-                                <a href="/admin/banners/<?= $banner['id'] ?>/edit">edit</a>
-                            </td>
-                            <td>
-                                <a href="/admin/banners/<?= $banner['id'] ?>/delete">delete</a>
+                                <a href="/admin/banners/<?= $banner['id'] ?>/edit" class="banners__link banners__link_type_edit">
+                                    <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+                                </a>
+                                <a href="/admin/banners/<?= $banner['id'] ?>/delete" class="banners__link banners__link_type_delete">
+                                  <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+                                </a>
                             </td>
                         </tr>
 

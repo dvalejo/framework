@@ -11,7 +11,7 @@ $router->get('#^/admin/banners/add$#i', 'BannersAdminController:add');
 $router->post('#^/admin/banners/post-add$#i', 'BannersAdminController:post_add');
 $router->get('#^/admin/banners/(?P<id>[\d]+)/edit$#i', 'BannersAdminController:edit');
 $router->post('#^/admin/banners/post-edit$#i', 'BannersAdminController:post_edit');
-$router->post('#^/admin/banners/post-upload$#i', 'BannersAdminController:post_upload');
+$router->post('#^/admin/banners/ajax-post-upload$#i', 'BannersAdminController:ajax_post_upload');
 $router->get('#^/admin/banners/(?P<id>[\d]+)/delete$#i', 'BannersAdminController:delete');
 
 $router->get('#^/admin/types/$#i', 'TypesAdminController:index');
@@ -21,7 +21,11 @@ $router->get('#^/admin/types/(?P<id>[\d]+)/edit$#i', 'TypesAdminController:edit'
 $router->post('#^/admin/types/post-edit$#i', 'TypesAdminController:post_edit');
 $router->get('#^/admin/types/(?P<id>[\d]+)/delete$#i', 'TypesAdminController:delete');
 
+
 $router->get('#^/admin/uploads/$#i', 'UploadsAdminController:index');
+$router->get('#^/admin/uploads/add$#i', 'UploadsAdminController:add');
+$router->post('#^/admin/uploads/ajax-post-upload$#i', 'UploadsAdminController:ajax_post_upload');
+$router->post('#^/admin/uploads/post-add$#i', 'UploadsAdminController:post_add');
 $router->get('#^/admin/uploads/(?P<upload_directory>[\S]+)/delete$#i', 'UploadsAdminController:delete');
 
 $router->get('#^/admin/users/$#i', 'UsersAdminController:index');

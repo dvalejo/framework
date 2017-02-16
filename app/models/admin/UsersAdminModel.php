@@ -8,7 +8,7 @@ class UsersAdminModel extends Model
      */
     public function all() {
         $sql = 'SELECT * FROM users';
-        return $this->qBuilder->simpleQuery($sql)->result();
+        return $this->qBuilder->simpleQuery($sql)->result('all');
     }
 
     /**
@@ -21,7 +21,7 @@ class UsersAdminModel extends Model
         $binds = [
             ':sess_name' => $session_name
         ];
-        return $user = $this->qBuilder->preparedQuery($sql, $binds)->result();
+        return $this->qBuilder->preparedQuery($sql, $binds)->result('single');
     }
 
     /**

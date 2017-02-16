@@ -4,11 +4,10 @@ class BannersAdminModel extends Model
 {
     public function all()
     {
-        $sql = 'SELECT banners.*, types.name AS type_name, uploads.id AS upload_id
+        $sql = 'SELECT banners.*, DATE_FORMAT(banners.updated_at,\'%d-%m-%Y %H:%i\') as updated_at, types.name AS type_name
                 FROM banners
-                LEFT JOIN types ON banners.type_slug = types.slug
-                LEFT JOIN uploads ON banners.directory = uploads.banner_directory';
-        return $this->qBuilder->simpleQuery($sql)->result();
+                LEFT JOIN types ON banners.type_slug = types.slug';
+        return $this->qBuilder->simpleQuery($sql)->result('all');
     }
 
     public function single($id)
@@ -17,22 +16,21 @@ class BannersAdminModel extends Model
         $binds = [
             ':id' => $id
         ];
-        return $this->qBuilder->preparedQuery($sql, $binds)->result();
+        return $this->qBuilder->preparedQuery($sql, $binds)->result('single');
     }
 
     public function add($post)
     {
         $sql = 'INSERT INTO banners 
-                (title, type_slug, width, height, project, directory, url, thumb_url, created_at, updated_at) 
+                (project, type_slug, width, height, title, thumbnail_url, url, created_at) 
                 VALUES 
-                (:banner_title, :banner_type, :banner_width, :banner_height, :banner_project, :banner_directory, :banner_url, :banner_thumb_url, NOW(), NULL)';
+                (:banner_project, :banner_type, :banner_width, :banner_height, :banner_title, :banner_thumb_url, :banner_url, NOW())';
         $binds = [
-            ':banner_title' => $post['banner_title'],
+            ':banner_project' => $post['banner_project'],
             ':banner_type' => $post['banner_type'],
             ':banner_width' => $post['banner_width'],
             ':banner_height' => $post['banner_height'],
-            ':banner_project' => $post['banner_project'],
-            ':banner_directory' => $post['banner_directory'],
+            ':banner_title' => $post['banner_title'],
             ':banner_url' => implode(',', $post['banner_url']),
             ':banner_thumb_url' => $post['banner_thumb_url']
         ];
@@ -44,25 +42,23 @@ class BannersAdminModel extends Model
         $sql = 'UPDATE banners 
                 SET
                   project = :banner_project,
-                  title = :banner_title,
                   type_slug = :banner_type,
                   width = :banner_width,
                   height = :banner_height,
-                  thumb_url = :banner_thumb_url,
+                  title = :banner_title,
+                  thumbnail_url = :banner_thumb_url,
                   url = :banner_url,
-                  directory = :banner_directory,
                   updated_at = NOW()
                 WHERE id = :banner_id';
         $binds = [
             ':banner_project' => $post['banner_project'],
-            ':banner_title' => $post['banner_title'],
             ':banner_type' => $post['banner_type'],
             ':banner_width' => $post['banner_width'],
             ':banner_height' => $post['banner_height'],
+            ':banner_title' => $post['banner_title'],
             ':banner_thumb_url' => $post['banner_thumb_url'],
             // Make string from
             ':banner_url' => implode(',', $post['banner_url']),
-            ':banner_directory' => $post['banner_directory'],
             ':banner_id' => $post['banner_id']
         ];
         $this->qBuilder->preparedQuery($sql, $binds);

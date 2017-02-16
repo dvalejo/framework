@@ -5,7 +5,7 @@ class UsersModel extends Model
     public function all()
     {
         $sql = 'SELECT * FROM users';
-        return $users = $this->qBuilder->simpleQuery($sql)->result();
+        return $users = $this->qBuilder->simpleQuery($sql)->result('all');
     }
 
     public function single($id)
@@ -14,6 +14,6 @@ class UsersModel extends Model
         $binds = [
             ':sess_name' => $id
         ];
-        return $user = $this->qBuilder->preparedQuery($sql, $binds)->result();
+        return $user = $this->qBuilder->preparedQuery($sql, $binds)->result('single');
     }
 }

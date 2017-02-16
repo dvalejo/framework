@@ -12,19 +12,18 @@ class Input
     protected $currentMethod;
     protected $temp = [];
     protected $filters = [
+        // --------------------------------------
         'string' => FILTER_SANITIZE_STRING,
         'number:int' => FILTER_SANITIZE_NUMBER_INT,
         'number:float' => FILTER_SANITIZE_NUMBER_FLOAT,
-        'array:int' => [
-            'filter' => FILTER_SANITIZE_NUMBER_INT,
-            'flags' => FILTER_REQUIRE_ARRAY
-        ],
-        'array:string' => [
-            'filter' => FILTER_SANITIZE_STRING,
-            'flags' => FILTER_REQUIRE_ARRAY
-        ],
         'email' => FILTER_SANITIZE_EMAIL,
-        'url' => FILTER_SANITIZE_URL
+        'url' => FILTER_SANITIZE_URL,
+        // --------------------------------------
+        'array:string' => [ 'filter' => FILTER_SANITIZE_STRING, 'flags' => FILTER_REQUIRE_ARRAY ],
+        'array:int' => [ 'filter' => FILTER_SANITIZE_NUMBER_INT, 'flags' => FILTER_REQUIRE_ARRAY ],
+        'array:float' => [ 'filter' => FILTER_SANITIZE_NUMBER_FLOAT, 'flags' => FILTER_REQUIRE_ARRAY ],
+        'array:email' => [ 'filter' => FILTER_SANITIZE_EMAIL, 'flags' => FILTER_REQUIRE_ARRAY ],
+        'array:url' => [ 'filter' => FILTER_SANITIZE_URL, 'flags' => FILTER_REQUIRE_ARRAY ]
     ];
 
     public function __construct()
@@ -105,6 +104,9 @@ class Input
     public function trimVars(array &$vars)
     {
         foreach ($vars as $var => $value) {
+            if (is_array($vars[$var])) {
+                continue;
+            }
             $vars[$var] = trim($value, ' ');
         }
     }

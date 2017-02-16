@@ -7,114 +7,30 @@
                 <h1 class="head head_type_entity">Загрузить.</h1>
             </div>
             <form action="/admin/uploads/post-add" method="post">
-
-                <fieldset class="fieldset fieldset_type_banner-project">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="" class="form-label">
-                                    Project directory &nbsp;/&nbsp; Каталог проекта:
-                                    <span class="form__requied-mark">*</span>
-                                </label>
-                                <input type="text" name="banner_project" id="" class="form-control js-banner-project-input">
-                                <p class="help-block help-block_type_error js-banner-project-output"></p>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="fieldset fieldset_type_banner-props">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="" class="form-label">
-                                    Banner type &nbsp;/&nbsp; Тип баннера:
-                                    <span class="form__requied-mark">*</span>
-                                </label>
-                                <select name="banner_type" id="" class="form-control js-banner-type-input">
-                                    <option value="">Тип баннера</option>
-                                    <?php foreach ($types as $type): ?>
-                                        <option value="<?= $type['slug'] ?>"><?= $type['name'] ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                                <p class="help-block help-block_type_error js-banner-type-output"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="" class="form-label">
-                                    Width &nbsp;/&nbsp; Ширина:
-                                    <span class="form__requied-mark">*</span>
-                                </label>
-                                <input type="text" name="banner_width" class="form-control js-banner-width-input">
-                                <p class="help-block help-block_type_error js-banner-width-output"></p>
-                            </div>
-                        </div>
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="" class="form-label">
-                                    Height &nbsp;/&nbsp; Высота:
-                                    <span class="form__requied-mark">*</span>
-                                </label>
-                                <input type="text" name="banner_height" class="form-control js-banner-height-input">
-                                <p class="help-block help-block_type_error js-banner-height-output"></p>
-                            </div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="fieldset fieldset_type_upload js-banner-file" disabled>
+                <fieldset class="fieldset fieldset_type_upload-file js-upload-file">
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
                                 <label for="">
-                                    Banner file &nbsp;/&nbsp; Файл баннера:
+                                    File &nbsp;/&nbsp; Файл:
                                     <span class="form__requied-mark">*</span>
                                 </label>
-                                <input type="file" name="banner_file" class="form-control form__file js-banner-file-input">
+                                <input type="file" name="upload_file" class="form-control form__file js-upload-file-input">
                             </div>
-                            <div class="form__block form__block_is_hidden js-banner-file-status"></div>
-                        </div>
-                    </div>
-                </fieldset>
-
-                <fieldset class="fieldset fieldset_type_banner-title js-banner-title" disabled>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="" class="form-label">Title &nbsp;/&nbsp; Название:</label>
-                                <input type="text" name="banner_title" id="" class="form-control js-banner-title-input">
+                            <div class="upload-progress js-upload-progress">
+                                <span class="upload-progress__status js-upload-progress-status">Готов загружать!</span>
+                                <span class="upload-progress__result js-upload-progress-result"></span>
                             </div>
                         </div>
                     </div>
                 </fieldset>
 
-                <fieldset class="fieldset fieldset_type_banner-paths js-banner-paths" disabled>
+                <fieldset class="fieldset fieldset_type_upload-directory js-upload-directory" disabled>
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
-                                <label for="" class="form-label">Banner directory &nbsp;/&nbsp; Каталог баннера:</label>
-                                <input name="banner_directory" class="form-control js-banner-dir-input">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="" class="form-label">Banner URL &nbsp;/&nbsp; Ссылка на баннер:</label>
-                                <div class="js-banner-urls">
-                                    <input name="banner_url[]" class="form-control form__input form__input_type_url js-banner-url-input">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label for="" class="form-label">Thumbnail URL &nbsp;/&nbsp; Ссылка на миниатюру:</label>
-                                <input name="banner_thumb_url" class="form-control js-banner-thumb-url-input">
+                                <label for="" class="form-label">Directory &nbsp;/&nbsp; Каталог:</label>
+                                <input type="text" name="upload_directory" value="" class="form-control js-upload-directory-input">
                             </div>
                         </div>
                     </div>
@@ -123,7 +39,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="form-group">
-                            <input type="submit" id="" value="Добавить новый баннер" class="btn btn-primary">
+                            <input type="submit" id="" value="Добавить в базу" class="btn btn-primary">
                         </div>
                     </div>
                 </div>
@@ -155,4 +71,4 @@
     </div>
 </div>
 
-<script src="<?= HTTP_JS_DIR ?>/validate.js"></script>
+<!--<script src="--><?//= HTTP_JS_DIR ?><!--/validate.js"></script>-->

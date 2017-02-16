@@ -5,11 +5,21 @@ class QueryBuilder
     private $pdo;
     private $statement;
 
+    /**
+     * QueryBuilder constructor.
+     * @param PDO $pdo
+     * -------------------------------------------------------------------
+     */
     function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
     }
 
+    /**
+     * @param $sql
+     * @return $this
+     * -------------------------------------------------------------------
+     */
     public function simpleQuery($sql)
     {
         try {
@@ -20,11 +30,18 @@ class QueryBuilder
             $error['message'] = $e->getMessage();
             $error['file'] = $e->getFile();
             $error['line'] = $e->getLine();
+            $error['trace'] = $e->getTrace();
             require LOCAL_VIEWS_DIR . "/error.view.php";
             exit();
         }
     }
 
+    /**
+     * @param $sql
+     * @param $binds
+     * @return $this
+     * -------------------------------------------------------------------
+     */
     public function preparedQuery($sql, $binds)
     {
         try {
@@ -41,9 +58,18 @@ class QueryBuilder
         }
     }
 
-    public function result()
+    /**
+     * @param $param
+     * @return bool
+     * -------------------------------------------------------------------
+     */
+    public function result($param)
     {
-        $rows = $this->statement->fetchAll(PDO::FETCH_ASSOC);
-        return count($rows) === 1 ? $rows[0] : $rows;
+        switch ($param) {
+            case 'single': return $this->statement->fetch(PDO::FETCH_ASSOC); break;
+            case 'all': return $this->statement->fetchAll(PDO::FETCH_ASSOC); break;
+            default: break;
+        }
+        return false;
     }
 }

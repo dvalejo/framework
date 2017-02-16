@@ -186,6 +186,12 @@ body {
     box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.25);
 }
 
+.banners__link {
+    padding: 0 5px;
+}
+.banners__link_type_edit { color: #000; }
+.banners__link_type_delete { color: #ff0000; }
+
 /* banner-single */
 /* ---------------------------------------------------------------- */
 .banner-single {}
@@ -283,6 +289,41 @@ body {
     background-color: #ffecea;
 }
 
+/* ----------------------------------------------------------------------- */
+.upload-progress {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    font-size: 18px;
+    background-color: rgba(0, 0, 0, 0);
+}
+.upload-progress__status {}
+.upload-progress__result {
+    margin: 0 0 0 10px;
+    font-weight: bold;
+}
+.upload-progress__errors {
+    margin: 10px 0 0 0;
+}
+.upload-progress__result_is_success {
+    color: #588747;
+}
+.upload-progress__result_is_error {
+    color: #834341;
+}
+/* ----------------------------------------------------------------------- */
+.banner-errors {
+    margin: 10px 0;
+    padding: 20px;
+    font-size: 18px;
+    background-color: #ffecec;
+    color: #834341;
+}
+.banner-errors_is_hidden {
+    display: none;
+}
+
+/* ----------------------------------------------------------------------- */
 .form__input {}
 .form__input_type_url {
     margin-bottom: 10px;
@@ -299,16 +340,17 @@ body {
     padding: 0;
 }
 .fieldset:last-of-type {
-    margin: 0 0 20px 0;
+    margin: 0 0 10px 0;
     border: none;
 }
 
 .fieldset_type_banner-project {}
 .fieldset_type_banner-props {}
-.fieldset_type_upload {
-    margin: 0 0 10px 0;
-    padding: 20px 20px 10px 20px;
-    background-color: #fff3ec;
+.fieldset_type_banner-file {
+    margin: 10px 0 20px 0;
+    padding: 20px;
+    background-color: #fffde7;
+    border: 3px dashed rgba(0, 0, 0, 0.1);
 }
 .fieldset_type_banner-title {}
 .fieldset_type_banner-paths {}
@@ -317,7 +359,7 @@ body {
     background-color: #fff3c6;
 }
 .fieldset_is_success {
-    background-color: #eaffe2;
+    background-color: #f3ffe3;
 }
 .fieldset_is_error {
     background-color: #ffecec;
