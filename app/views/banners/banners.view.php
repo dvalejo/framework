@@ -11,10 +11,10 @@
                 <?php foreach ($banners as $banner): ?>
                     <div class="banners__item banner">
                         <div class="banner__title">
-                            <a href="<?= HTTP_SITE_DIR ?>/banners/<?= $banner['id'] ?>/"><?= $banner['title'] ?></a>
+                            <a href="/banners/<?= $banner['id'] ?>/"><?= $banner['title'] ?></a>
                         </div>
                         <div class="banner__thumb">
-                            <a href="<?= HTTP_SITE_DIR ?>/banners/<?= $banner['id'] ?>/">
+                            <a href="/banners/<?= $banner['id'] ?>/">
                                 <img src="<?= $banner['thumbnail_url'] ?>" class="" alt="">
                             </a>
                             <div class="banner__type banner__type_<?= strtolower($banner['t_name']) ?>">

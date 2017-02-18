@@ -1,4 +1,5 @@
 <?php
+namespace vendor\core;
 
 class Input
 {
@@ -42,17 +43,17 @@ class Input
      * @param $request_method
      * @param array $options
      * @return $this
-     * @throws Exception
+     * @throws \Exception
      * -------------------------------------------------------------------
      */
     public function filter($request_method, array $options = [])
     {
         if (!isset($options)) {
-            throw new Exception('Ошибка. Не определёны параметры фильтрации.');
+            throw new \Exception('Ошибка. Не определёны параметры фильтрации.');
         }
         $request_method = strtoupper($request_method);
         if (!array_key_exists($request_method, $this->vars)) {
-            throw new Exception("Ошибка. Суперглобального массива {$request_method} нет.");
+            throw new \Exception("Ошибка. Суперглобального массива {$request_method} нет.");
         }
 
         foreach ($options as $var => $filter) {

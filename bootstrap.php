@@ -2,17 +2,10 @@
 
 require "config.php";
 require "functions.php";
-require "Autoloader.php";
 
-$autoloader = new Autoloader([
-    LOCAL_VENDOR_DIR,
-    LOCAL_CORE_DIR,
-    LOCAL_BASE_DIR,
-    LOCAL_CONTROLLERS_DIR,
-    LOCAL_MODELS_DIR,
-    LOCAL_ADMIN_CONTROLLERS_DIR,
-    LOCAL_ADMIN_MODELS_DIR
-]);
-$autoloader->run();
+spl_autoload_register(function($className){
+    $class = LOCAL_ROOT . _DS_ . str_replace('\\', _DS_, $className) . '.php';
+    if (is_file($class)) require $class;
+});
 
 define('ABSPATH', 1);

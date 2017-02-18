@@ -1,6 +1,7 @@
 <?php
+namespace vendor\core\base;
 
-class Controller
+class Controller implements IController
 {
     protected $request;
     protected $view;

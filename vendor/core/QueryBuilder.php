@@ -1,4 +1,5 @@
 <?php
+namespace vendor\core;
 
 class QueryBuilder
 {
@@ -7,10 +8,10 @@ class QueryBuilder
 
     /**
      * QueryBuilder constructor.
-     * @param PDO $pdo
+     * @param \PDO $pdo
      * -------------------------------------------------------------------
      */
-    function __construct(PDO $pdo)
+    function __construct(\PDO $pdo)
     {
         $this->pdo = $pdo;
     }
@@ -26,7 +27,7 @@ class QueryBuilder
             $this->statement = $this->pdo->query($sql);
             return $this;
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
             $error['message'] = $e->getMessage();
             $error['file'] = $e->getFile();
             $error['line'] = $e->getLine();
@@ -49,7 +50,7 @@ class QueryBuilder
             $this->statement->execute($binds);
             return $this;
         }
-        catch (PDOException $e) {
+        catch (\PDOException $e) {
             $error['message'] = $e->getMessage();
             $error['file'] = $e->getFile();
             $error['line'] = $e->getLine();
@@ -66,8 +67,8 @@ class QueryBuilder
     public function result($param)
     {
         switch ($param) {
-            case 'single': return $this->statement->fetch(PDO::FETCH_ASSOC); break;
-            case 'all': return $this->statement->fetchAll(PDO::FETCH_ASSOC); break;
+            case 'single': return $this->statement->fetch(\PDO::FETCH_ASSOC); break;
+            case 'all': return $this->statement->fetchAll(\PDO::FETCH_ASSOC); break;
             default: break;
         }
         return false;

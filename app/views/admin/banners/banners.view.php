@@ -31,7 +31,7 @@
                             <td><?= $banner['type_name'] ?></td>
                             <td><?= $banner['width'] ?> x <?= $banner['height'] ?></td>
                             <td><?= $banner['updated_at'] ?></td>
-                            <td>
+                            <td class="table_cell table__cell_type_buttons">
                                 <a href="/admin/banners/<?= $banner['id'] ?>/edit" class="banners__link banners__link_type_edit">
                                     <span class="glyphicon glyphicon-edit" aria-hidden="true"></span>
                                 </a>

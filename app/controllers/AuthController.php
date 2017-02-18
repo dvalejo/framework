@@ -1,4 +1,9 @@
 <?php
+namespace app\controllers;
+
+use vendor\core\base\Controller;
+use vendor\core\Input;
+use app\models\admin\UsersAdminModel;
 
 class AuthController extends Controller
 {

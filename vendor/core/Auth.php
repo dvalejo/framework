@@ -1,4 +1,7 @@
 <?php
+namespace vendor\core;
+
+use app\models\admin\UsersAdminModel;
 
 class Auth
 {

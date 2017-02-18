@@ -1,4 +1,5 @@
 <?php
+namespace vendor\core;
 
 class Request {
 

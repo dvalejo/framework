@@ -6,6 +6,5 @@
                 <li class="errors__item"><?= $error ?></li>
             <?php endforeach; ?>
         </ol>
-        <p><a href="<?= Request::referer() ?>">Обратно к форме</a></p>
     </div>
 </div>

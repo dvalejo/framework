@@ -1,4 +1,7 @@
 <?php
+namespace app\models\admin;
+
+use vendor\core\base\Model;
 
 class TypesAdminModel extends Model
 {

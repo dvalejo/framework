@@ -1,4 +1,10 @@
 <?php
+namespace app\controllers\admin;
+
+use vendor\core\base\Controller;
+use vendor\core\Auth;
+use vendor\core\Input;
+use app\models\admin\TypesAdminModel;
 
 class TypesAdminController extends Controller
 {

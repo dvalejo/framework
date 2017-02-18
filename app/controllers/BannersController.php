@@ -1,4 +1,9 @@
 <?php
+namespace app\controllers;
+
+use vendor\core\base\Controller;
+use vendor\core\Input;
+use app\models\BannersModel;
 
 class BannersController extends Controller
 {

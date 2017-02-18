@@ -252,6 +252,10 @@ body {
 .table_type_admin {
     font-size: 14px;
 }
+.table_cell {}
+.table__cell_type_buttons {
+    text-align: right;
+}
 
 /* form */
 /* ---------------------------------------------------------------- */

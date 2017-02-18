@@ -1,4 +1,10 @@
 <?php
+namespace app\controllers\admin;
+
+use vendor\core\base\Controller;
+use vendor\core\Auth;
+use vendor\core\Input;
+use app\models\admin\UsersAdminModel;
 
 class UsersAdminController extends Controller
 {
@@ -31,7 +37,7 @@ class UsersAdminController extends Controller
     }
 
     /**
-     * @throws Exception
+     * @throws \Exception
      * -------------------------------------------------------------------
      */
     public function post_add()

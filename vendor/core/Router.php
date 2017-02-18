@@ -1,4 +1,5 @@
 <?php
+namespace vendor\core;
 
 class Router
 {
@@ -54,7 +55,7 @@ class Router
      * -------------------------------------------------------------------
      */
     public function gotoMainPage() {
-        $this->controller = 'MainController';
+        $this->controller = 'app\controllers\MainController';
         $this->action = 'index';
         $controllerInstance = new $this->controller;
         return call_user_func([$controllerInstance, $this->action]);
@@ -72,11 +73,20 @@ class Router
         foreach ($this->routes[$requestMethod] as $route => $behavior) {
             if (preg_match($route, $requestUri, $matches)) {
                 list($this->controller, $this->action) = explode(':', $this->routes[$requestMethod][$route]);
+
+                // Если контроллер админский то у него namespace app\controllers\admin
+                if (strpos($this->controller, 'Admin') !== false) {
+                    $this->controller = 'app\controllers\admin\\' . $this->controller;
+                }
+                else {
+                    // Иначе обычный пользовательский namespace app\controllers
+                    $this->controller = 'app\controllers\\' . $this->controller;
+                }
                 $this->parameters = array_slice($matches, 1);
 
                 // Проверяем есть ли такой контроллер
                 if (!class_exists($this->controller)) {
-                    echo 'Контроллер не найден.';
+                    echo "Контроллер {$this->controller} не найден.";
                     exit();
                 }
                 $controllerInstance = new $this->controller;

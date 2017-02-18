@@ -1,5 +1,8 @@
 <?php
 
+use vendor\core\Router;
+use vendor\core\Request;
+
 $router = new Router();
 
 // admin routes

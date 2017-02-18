@@ -1,4 +1,11 @@
 <?php
+namespace app\controllers\admin;
+
+use vendor\core\base\Controller;
+use vendor\core\Auth;
+use vendor\core\Input;
+use app\models\admin\BannersAdminModel;
+use app\models\admin\TypesAdminModel;
 
 class BannersAdminController extends Controller
 {
@@ -170,7 +177,7 @@ class BannersAdminController extends Controller
         }
 
         // -----------------------------------------------------------------------------
-        $zip = new ZipArchive();
+        $zip = new \ZipArchive();
         $arch = $zip->open($bannerFullName);
         if ( ! $arch === true) {
             $result['errors'][] = 'Не можем открыть архив.';
@@ -193,7 +200,7 @@ class BannersAdminController extends Controller
         $thumbFiles = [];
         $bannerFiles = [];
 
-        foreach (new DirectoryIterator($bannerUnzipFullDir) as $file) {
+        foreach (new \DirectoryIterator($bannerUnzipFullDir) as $file) {
             if ($file->isDot()) continue;
 
             if (preg_match('#^(thumb.*?)(\.)(jpg|png)$#i', $file->getFilename())) {
