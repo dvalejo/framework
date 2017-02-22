@@ -3,7 +3,7 @@ namespace app\models\admin;
 
 use vendor\core\base\Model;
 
-class UsersAdminModel extends Model
+class AdminUsersModel extends Model
 {
     /**
      * @return mixed

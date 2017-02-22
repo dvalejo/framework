@@ -4,7 +4,7 @@ namespace app\controllers\admin;
 use vendor\core\base\Controller;
 use vendor\core\Auth;
 
-class MainAdminController extends Controller
+class AdminMainController extends Controller
 {
     protected $layout = 'admin';
 

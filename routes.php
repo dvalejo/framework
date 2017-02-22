@@ -7,34 +7,33 @@ $router = new Router();
 
 // admin routes
 // --------------------------------------------------------------------------------- //
-$router->get('#^/admin/$#i', 'MainAdminController:index');
+$router->get('#^/admin/$#i', 'AdminMainController:index');
 
-$router->get('#^/admin/banners/$#i', 'BannersAdminController:index');
-$router->get('#^/admin/banners/add$#i', 'BannersAdminController:add');
-$router->post('#^/admin/banners/post-add$#i', 'BannersAdminController:post_add');
-$router->get('#^/admin/banners/(?P<id>[\d]+)/edit$#i', 'BannersAdminController:edit');
-$router->post('#^/admin/banners/post-edit$#i', 'BannersAdminController:post_edit');
-$router->post('#^/admin/banners/ajax-post-upload$#i', 'BannersAdminController:ajax_post_upload');
-$router->get('#^/admin/banners/(?P<id>[\d]+)/delete$#i', 'BannersAdminController:delete');
+$router->get('#^/admin/banners/$#i', 'AdminBannersController:index');
+$router->get('#^/admin/banners/add$#i', 'AdminBannersController:add');
+$router->post('#^/admin/banners/post-add$#i', 'AdminBannersController:post_add');
+$router->get('#^/admin/banners/(?P<id>[\d]+)/edit$#i', 'AdminBannersController:edit');
+$router->post('#^/admin/banners/post-edit$#i', 'AdminBannersController:post_edit');
+$router->post('#^/admin/banners/ajax-post-upload$#i', 'AdminBannersController:ajax_post_upload');
+$router->get('#^/admin/banners/(?P<id>[\d]+)/delete$#i', 'AdminBannersController:delete');
 
-$router->get('#^/admin/types/$#i', 'TypesAdminController:index');
-$router->get('#^/admin/types/add$#i', 'TypesAdminController:add');
-$router->post('#^/admin/types/post-add$#i', 'TypesAdminController:post_add');
-$router->get('#^/admin/types/(?P<id>[\d]+)/edit$#i', 'TypesAdminController:edit');
-$router->post('#^/admin/types/post-edit$#i', 'TypesAdminController:post_edit');
-$router->get('#^/admin/types/(?P<id>[\d]+)/delete$#i', 'TypesAdminController:delete');
+$router->get('#^/admin/types/$#i', 'AdminTypesController:index');
+$router->get('#^/admin/types/add$#i', 'AdminTypesController:add');
+$router->post('#^/admin/types/post-add$#i', 'AdminTypesController:post_add');
+$router->get('#^/admin/types/(?P<id>[\d]+)/edit$#i', 'AdminTypesController:edit');
+$router->post('#^/admin/types/post-edit$#i', 'AdminTypesController:post_edit');
+$router->get('#^/admin/types/(?P<id>[\d]+)/delete$#i', 'AdminTypesController:delete');
 
+$router->get('#^/admin/uploads/$#i', 'AdminUploadsController:index');
+$router->get('#^/admin/uploads/add$#i', 'AdminUploadsController:add');
+$router->post('#^/admin/uploads/ajax-post-upload$#i', 'AdminUploadsController:ajax_post_upload');
+$router->post('#^/admin/uploads/post-add$#i', 'AdminUploadsController:post_add');
+$router->get('#^/admin/uploads/(?P<upload_directory>[\S]+)/delete$#i', 'AdminUploadsController:delete');
 
-$router->get('#^/admin/uploads/$#i', 'UploadsAdminController:index');
-$router->get('#^/admin/uploads/add$#i', 'UploadsAdminController:add');
-$router->post('#^/admin/uploads/ajax-post-upload$#i', 'UploadsAdminController:ajax_post_upload');
-$router->post('#^/admin/uploads/post-add$#i', 'UploadsAdminController:post_add');
-$router->get('#^/admin/uploads/(?P<upload_directory>[\S]+)/delete$#i', 'UploadsAdminController:delete');
-
-$router->get('#^/admin/users/$#i', 'UsersAdminController:index');
-$router->get('#^/admin/users/add$#i', 'UsersAdminController:add');
-$router->post('#^/admin/users/post-add$#i', 'UsersAdminController:post_add');
-$router->get('#^/admin/users/(?P<id>[\d]+)/delete$#i', 'UsersAdminController:delete');
+$router->get('#^/admin/users/$#i', 'AdminUsersController:index');
+$router->get('#^/admin/users/add$#i', 'AdminUsersController:add');
+$router->post('#^/admin/users/post-add$#i', 'AdminUsersController:post_add');
+$router->get('#^/admin/users/(?P<id>[\d]+)/delete$#i', 'AdminUsersController:delete');
 
 $router->get('#^/login$#i', 'AuthController:login');
 $router->post('#^/post-login$#i', 'AuthController:post_login');

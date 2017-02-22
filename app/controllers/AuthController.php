@@ -3,7 +3,7 @@ namespace app\controllers;
 
 use vendor\core\base\Controller;
 use vendor\core\Input;
-use app\models\admin\UsersAdminModel;
+use app\models\admin\AdminUsersModel;
 
 class AuthController extends Controller
 {
@@ -38,7 +38,7 @@ class AuthController extends Controller
             exit();
         }
         
-        $u = new UsersAdminModel();
+        $u = new AdminUsersModel();
         $users = $u->all();
 
         foreach ($users as $user) {

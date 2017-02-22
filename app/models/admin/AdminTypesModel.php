@@ -3,7 +3,7 @@ namespace app\models\admin;
 
 use vendor\core\base\Model;
 
-class TypesAdminModel extends Model
+class AdminTypesModel extends Model
 {
     public function all()
     {

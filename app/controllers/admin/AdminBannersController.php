@@ -4,10 +4,11 @@ namespace app\controllers\admin;
 use vendor\core\base\Controller;
 use vendor\core\Auth;
 use vendor\core\Input;
-use app\models\admin\BannersAdminModel;
-use app\models\admin\TypesAdminModel;
+use app\models\admin\AdminBannersModel;
+use app\models\admin\AdminTypesModel;
+use vendor\core\Uploader;
 
-class BannersAdminController extends Controller
+class AdminBannersController extends Controller
 {
     protected $layout = 'admin';
 
@@ -26,7 +27,7 @@ class BannersAdminController extends Controller
     public function index()
     {
         
-        $b = new BannersAdminModel();
+        $b = new AdminBannersModel();
         $banners = $b->all();
         $this->setVars([
             'banners' => $banners
@@ -39,7 +40,7 @@ class BannersAdminController extends Controller
      */
     public function add()
     {
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $types = $t->allForBanners();
         $this->setVars([
             'types' => $types
@@ -78,7 +79,7 @@ class BannersAdminController extends Controller
             exit();
         }
 
-        $b = new BannersAdminModel();
+        $b = new AdminBannersModel();
         $b->add($input->post());
         $this->redirect('/admin/banners/');
     }
@@ -109,16 +110,20 @@ class BannersAdminController extends Controller
         }
 
         // -----------------------------------------------------------------------------
-        if (empty($_FILES)) {
-            $result['errors'] = 'Нет файлов для загрузки.';
-            echo json_encode($result, JSON_UNESCAPED_UNICODE);
-            exit();
-        }
-
-        $bannerFileName = basename($_FILES['banner_file']['name']);
-        $bannerTempName = $_FILES['banner_file']['tmp_name'];
-        $bannerExtension = pathinfo($bannerFileName, PATHINFO_EXTENSION);
-        $bannerName = pathinfo($bannerFileName, PATHINFO_FILENAME);
+//        if (empty($_FILES)) {
+//            $result['errors'][] = 'Нет файлов для загрузки.';
+//            echo json_encode($result, JSON_UNESCAPED_UNICODE);
+//            exit();
+//        }
+//
+//        $bannerFileName = basename($_FILES['banner_file']['name']);
+//        $bannerTempName = $_FILES['banner_file']['tmp_name'];
+//        $bannerExtension = pathinfo($bannerFileName, PATHINFO_EXTENSION);
+//        $bannerName = pathinfo($bannerFileName, PATHINFO_FILENAME);
+        $uploader = new Uploader([
+            'input' => 'banner_file',
+            'extensions' => ['png']
+        ]);
         $bannerProject = $input->post('banner_project');
         $bannerType = $input->post('banner_type');
 
@@ -285,9 +290,9 @@ class BannersAdminController extends Controller
      */
     public function edit($id)
     {
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $types = $t->allForBanners();
-        $b = new BannersAdminModel();
+        $b = new AdminBannersModel();
         $banner = $b->single($id);
 
         // Create an array from urls string.
@@ -336,7 +341,7 @@ class BannersAdminController extends Controller
             exit;
         }
 
-        $b = new BannersAdminModel();
+        $b = new AdminBannersModel();
         $b->update($input->post());
 
         $this->redirect('/admin/banners/');
@@ -348,7 +353,7 @@ class BannersAdminController extends Controller
      */
     public function delete($id)
     {
-        $b = new BannersAdminModel();
+        $b = new AdminBannersModel();
         $banner = $b->single($id);
         // Удаляем баннер и если каталог проекта пустой - его тоже удаляем
         // --------------------------------

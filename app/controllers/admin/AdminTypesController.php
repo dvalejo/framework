@@ -4,9 +4,9 @@ namespace app\controllers\admin;
 use vendor\core\base\Controller;
 use vendor\core\Auth;
 use vendor\core\Input;
-use app\models\admin\TypesAdminModel;
+use app\models\admin\AdminTypesModel;
 
-class TypesAdminController extends Controller
+class AdminTypesController extends Controller
 {
     protected $layout = 'admin';
 
@@ -24,7 +24,7 @@ class TypesAdminController extends Controller
      */
     public function index()
     {
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $types = $t->all();
         $this->setVars([
             'types' => $types
@@ -60,7 +60,7 @@ class TypesAdminController extends Controller
             $this->getView('form-error');
             exit();
         }
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $t->add($input->post());
         $this->redirect('/admin/types/');
     }
@@ -71,7 +71,7 @@ class TypesAdminController extends Controller
      */
     public function edit($id)
     {
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $type = $t->single($id);
         $this->setVars([
             'type' => $type
@@ -100,7 +100,7 @@ class TypesAdminController extends Controller
             $this->getView('form-error');
             exit();
         }
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $t->update($input->post());
         $this->redirect('/admin/types/');
     }
@@ -111,7 +111,7 @@ class TypesAdminController extends Controller
      */
     public function delete($id)
     {
-        $t = new TypesAdminModel();
+        $t = new AdminTypesModel();
         $t->delete($id);
         $this->redirect('/admin/types/');
     }

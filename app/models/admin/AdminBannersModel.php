@@ -3,7 +3,7 @@ namespace app\models\admin;
 
 use vendor\core\base\Model;
 
-class BannersAdminModel extends Model
+class AdminBannersModel extends Model
 {
     public function all()
     {

@@ -4,9 +4,9 @@ namespace app\controllers\admin;
 use vendor\core\base\Controller;
 use vendor\core\Auth;
 use vendor\core\Input;
-use app\models\admin\UsersAdminModel;
+use app\models\admin\AdminUsersModel;
 
-class UsersAdminController extends Controller
+class AdminUsersController extends Controller
 {
     protected $layout = 'admin';
 
@@ -20,7 +20,7 @@ class UsersAdminController extends Controller
      */
     public function index()
     {
-        $u = new UsersAdminModel();
+        $u = new AdminUsersModel();
         $users = $u->all();
         $this->setVars([
             'users' => $users
@@ -64,7 +64,7 @@ class UsersAdminController extends Controller
         }
         $hash = password_hash($input->post('user_password'), PASSWORD_DEFAULT);
 
-        $u = new UsersAdminModel();
+        $u = new AdminUsersModel();
         $u->add($input->post(), $hash);
         $this->redirect('/admin/users/');
     }
@@ -75,7 +75,7 @@ class UsersAdminController extends Controller
      */
     public function delete($id)
     {
-        $u = new UsersAdminModel();
+        $u = new AdminUsersModel();
         $u->delete($id);
         $this->redirect('/admin/users/');
     }

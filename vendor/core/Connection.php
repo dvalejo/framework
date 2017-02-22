@@ -1,6 +1,8 @@
 <?php
 namespace vendor\core;
 
+use vendor\core\exceptions\DatabaseException;
+
 class Connection
 {
     public static function connect()
@@ -11,11 +13,13 @@ class Connection
             $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
         }
         catch (\PDOException $e) {
-            $error['message'] = $e->getMessage();
-            $error['file'] = $e->getFile();
-            $error['line'] = $e->getLine();
-            require LOCAL_VIEWS_DIR . "/error.view.php";
-            exit();
+            try {
+                throw new DatabaseException($e->getMessage());
+            }
+            catch (DatabaseException $e) {
+                $e->errorMessage();
+                exit();
+            }
         }
         return $pdo;
     }

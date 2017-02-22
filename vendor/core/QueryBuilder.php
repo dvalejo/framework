@@ -1,6 +1,8 @@
 <?php
 namespace vendor\core;
 
+use vendor\core\exceptions\DatabaseException;
+
 class QueryBuilder
 {
     private $pdo;
@@ -28,12 +30,13 @@ class QueryBuilder
             return $this;
         }
         catch (\PDOException $e) {
-            $error['message'] = $e->getMessage();
-            $error['file'] = $e->getFile();
-            $error['line'] = $e->getLine();
-            $error['trace'] = $e->getTrace();
-            require LOCAL_VIEWS_DIR . "/error.view.php";
-            exit();
+            try {
+                throw new DatabaseException($e->getMessage());
+            }
+            catch (DatabaseException $e) {
+                $e->errorMessage();
+                exit();
+            }
         }
     }
 
@@ -51,11 +54,13 @@ class QueryBuilder
             return $this;
         }
         catch (\PDOException $e) {
-            $error['message'] = $e->getMessage();
-            $error['file'] = $e->getFile();
-            $error['line'] = $e->getLine();
-            require LOCAL_VIEWS_DIR . "/error.view.php";
-            exit();
+            try {
+                throw new DatabaseException($e->getMessage());
+            }
+            catch (DatabaseException $e) {
+                $e->errorMessage();
+                exit();
+            }
         }
     }
 
@@ -66,10 +71,21 @@ class QueryBuilder
      */
     public function result($param)
     {
-        switch ($param) {
-            case 'single': return $this->statement->fetch(\PDO::FETCH_ASSOC); break;
-            case 'all': return $this->statement->fetchAll(\PDO::FETCH_ASSOC); break;
-            default: break;
+        try {
+            switch ($param) {
+                case 'single': return $this->statement->fetch(\PDO::FETCH_ASSOC); break;
+                case 'all': return $this->statement->fetchAll(\PDO::FETCH_ASSOC); break;
+                default: break;
+            }
+        }
+        catch (\PDOException $e) {
+            try {
+                throw new DatabaseException($e->getMessage());
+            }
+            catch (DatabaseException $e) {
+                $e->errorMessage();
+                exit();
+            }
         }
         return false;
     }
